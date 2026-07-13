@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upgrade Navbar Fountainhead</title>
+    <style>
+        /* Gaya dasar (sama seperti sebelumnya) */
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+        body { font-family: 'Poppins', sans-serif; margin: 0; }
+        .container { max-width: 1100px; margin: auto; padding: 0 20px; }
+        .btn { display: inline-block; background-color: #E5890A; color: #fff; padding: 10px 20px; border-radius: 5px; text-decoration: none; font-weight: 600; }
+
+        /* --- STYLING NAVBAR BARU --- */
+        .navbar {
+            background: #fff;
+            padding: 15px 0;
+            border-bottom: 1px solid #eee;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .navbar .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #333;
+            text-decoration: none;
+        }
+
+        /* Menu Navigasi di Desktop */
+        .nav-menu {
+            display: flex;
+            align-items: center;
+            list-style: none; /* Hilangkan titik-titik list */
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-menu li {
+            margin-left: 30px; /* Jarak antar menu */
+        }
+
+        .nav-menu a {
+            color: #333;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        .nav-menu a:hover {
+            color: #E5890A; /* Warna oranye saat disentuh mouse */
+        }
+
+        .nav-menu .btn-navbar {
+            padding: 8px 18px; /* Tombol di navbar lebih kecil */
+        }
+
+        /* Hamburger Menu (untuk mobile) */
+        .hamburger {
+            display: none; /* Sembunyikan di desktop */
+            cursor: pointer;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .hamburger .bar {
+            width: 25px;
+            height: 3px;
+            background-color: #333;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+
+        /* --- KODE RESPONSIVE UNTUK MOBILE --- */
+        @media (max-width: 820px) {
+            /* Sembunyikan menu desktop di layar kecil */
+            .nav-menu {
+                display: none;
+                position: absolute;
+                top: 68px; /* Tepat di bawah navbar */
+                left: 0;
+                width: 100%;
+                background-color: white;
+                flex-direction: column;
+                text-align: center;
+                border-bottom: 1px solid #eee;
+                padding: 20px 0;
+            }
+
+            /* Tampilkan menu jika class 'active' ditambahkan oleh JavaScript */
+            .nav-menu.active {
+                display: flex;
+            }
+
+            .nav-menu li {
+                margin: 15px 0; /* Atur jarak vertikal untuk menu mobile */
+            }
+
+            /* Tampilkan ikon hamburger di layar kecil */
+            .hamburger {
+                display: flex;
+            }
+        }
+
+        /* Contoh section agar bisa di-scroll */
+        .dummy-section { height: 100vh; display:flex; align-items:center; justify-content:center; font-size: 3rem; background-color: #f4f4f4; }
+    </style>
+</head>
+<body>
+
+    <header class="navbar">
+        <div class="container">
+            <a href="#" class="logo">Fountainhead</a>
+
+            <ul class="nav-menu" id="nav-menu">
+                <li><a href="#cafe">Cafe</a></li>
+                <li><a href="#coliving">Coliving</a></li>
+                <li><a href="#gallery">Galeri</a></li>
+                <li><a href="#contact" class="btn btn-navbar">Kontak Kami</a></li>
+            </ul>
+
+            <div class="hamburger" id="hamburger">
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+            </div>
+        </div>
+    </header>
+
+    <div id="cafe" class="dummy-section" style="background-color: #fff8e1;">Ini Section Cafe</div>
+    <div id="coliving" class="dummy-section" style="background-color: #e3f2fd;">Ini Section Coliving</div>
+    <div id="gallery" class="dummy-section" style="background-color: #fbe9e7;">Ini Section Galeri</div>
+    <div id="contact" class="dummy-section" style="background-color: #e8f5e9;">Ini Section Kontak</div>
+
+
+    <script>
+        // Fungsi untuk membuka/menutup menu hamburger
+        const hamburger = document.getElementById('hamburger');
+        const navMenu = document.getElementById('nav-menu');
+
+        hamburger.addEventListener('click', () => {
+            navMenu.classList.toggle('active');
+        });
+
+        // Fungsi untuk smooth scrolling saat link menu di-klik
+        document.querySelectorAll('.nav-menu a').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                // Tutup menu mobile setelah link di-klik
+                if (navMenu.classList.contains('active')) {
+                    navMenu.classList.remove('active');
+                }
+
+                // Cek apakah link punya hashtag (#)
+                if (this.getAttribute('href').startsWith('#')) {
+                    e.preventDefault(); // Mencegah loncatan default
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({
+                        behavior: 'smooth' // Efek scroll halus
+                    });
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>
