@@ -244,12 +244,27 @@ class ColivingController extends Controller
     }
     public function myBooking()
     {
-        $bookings = ColivingBooking::with('colivingRoom')
+        $colivingBookings = ColivingBooking::with('colivingRoom')
             ->where('user_id', auth()->id())
-            ->latest()
-            ->get();
+            ->get()
+            ->map(function ($booking) {
+                $booking->booking_type = 'coliving';
+                return $booking;
+            });
 
-        return view('landing.coliving.my-booking', compact('bookings'));
+        $eventBookings = CafeEventBooking::where('user_id', auth()->id())
+            ->get()
+            ->map(function ($booking) {
+                $booking->booking_type = 'event';
+                return $booking;
+            });
+
+        $bookings = $colivingBookings
+            ->concat($eventBookings)
+            ->sortByDesc('created_at')
+            ->values();
+
+        return view('landing.my-booking', compact('bookings'));
     }
     public function snapToken(Request $request, $bookingReference)
     {

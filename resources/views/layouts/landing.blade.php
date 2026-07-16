@@ -182,7 +182,7 @@
                                 @click.away="open = false"
                                 class="absolute right-0 mt-2 w-52 bg-white rounded-lg shadow-lg border">
 
-                                <a href="{{ route('coliving.my-booking') }}"
+                                <a href="{{ route('my-booking') }}"
                                     class="block px-4 py-3 hover:bg-gray-100">
                                     <i class="fas fa-calendar-check mr-2"></i>
                                     My Booking
@@ -258,7 +258,7 @@
 
 
     {{-- Main Content --}}
-    <main class="flex-1 pt-24">
+    <main class="pt-20">
         @yield('content')
     </main>
 

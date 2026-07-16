@@ -51,9 +51,6 @@ Route::prefix('coliving')->name('coliving.')->group(function () {
     // route customer
     Route::middleware(['auth', 'role:customer'])->group(function () {
 
-        Route::get('my-booking', [ColivingController::class, 'myBooking'])
-            ->name('my-booking');
-
         Route::post('{room}/book', [ColivingController::class, 'book'])
             ->name('book');
     });
@@ -68,18 +65,29 @@ Route::post('coliving/payment/webhook', [ColivingController::class, 'paymentWebh
 
 // ☕ Cafe & Events Routes (public)
 Route::prefix('cafe')->name('cafe.')->group(function () {
+
+    // Halaman publik
     Route::get('/', [CafeController::class, 'index'])->name('index');
-    // menu cafe
     Route::get('/menu', [CafeController::class, 'menu'])->name('menu');
-    // payment flow
-    Route::get('payment-callback', [CafeController::class, 'paymentCallback'])->name('payment.callback');
-    Route::get('payment-status/{bookingReference}', [CafeController::class, 'paymentStatus'])->name('payment.status'); // ✅ tambah ini
-    Route::get('payment/{bookingReference}', [CafeController::class, 'payment'])->name('payment');
-    Route::post('payment/{bookingReference}/snap-token', [CafeController::class, 'snapToken'])->name('snap-token');
-    Route::get('payment-success/{bookingReference}', [CafeController::class, 'paymentSuccess'])->name('payment.success');
-    // booking
-    Route::get('/book-event', [CafeController::class, 'bookEvent'])->name('book-event');
-    Route::post('/book-event', [CafeController::class, 'storeBooking'])->name('store-booking');
+
+    // Semua fitur booking wajib login
+    Route::middleware('auth')->group(function () {
+
+        // Booking Event
+        Route::get('/book-event', [CafeController::class, 'bookEvent'])->name('book-event');
+        Route::post('/book-event', [CafeController::class, 'storeBooking'])->name('store-booking');
+
+        // Payment
+        Route::get('payment/{bookingReference}', [CafeController::class, 'payment'])->name('payment');
+        Route::post('payment/{bookingReference}/snap-token', [CafeController::class, 'snapToken'])->name('snap-token');
+        Route::get('payment-success/{bookingReference}', [CafeController::class, 'paymentSuccess'])->name('payment.success');
+        Route::get('payment-status/{bookingReference}', [CafeController::class, 'paymentStatus'])->name('payment.status');
+
+    });
+
+    // Callback Midtrans (jangan pakai auth)
+    Route::get('payment-callback', [CafeController::class, 'paymentCallback'])
+        ->name('payment.callback');
 });
 
 
@@ -246,6 +254,13 @@ Route::middleware(['auth', 'verified'])
         });
     });
 
+Route::middleware(['auth', 'role:customer'])->group(function () {
+
+    Route::get('/my-booking', [ColivingController::class, 'myBooking'])
+        ->name('my-booking');
+
+});
+    
 
 // 🔐 Auth routes
 require __DIR__ . '/auth.php';

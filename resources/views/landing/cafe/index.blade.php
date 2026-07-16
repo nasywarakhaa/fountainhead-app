@@ -38,7 +38,45 @@
             </div>
         </div>
     </section>
-    @include('landing.cafe.partials.booking-form')
+    @auth
+
+        @include('landing.cafe.partials.booking-form')
+
+    @endauth
+
+    @guest
+
+    <section class="py-20 bg-white">
+        <div class="container mx-auto px-4">
+
+            <div class="max-w-3xl mx-auto bg-white border border-gray-200 rounded-3xl shadow-lg p-10 text-center">
+
+                <div class="w-20 h-20 mx-auto rounded-full bg-orange-100 flex items-center justify-center mb-6">
+                    <i class="fas fa-lock text-3xl text-orange-500"></i>
+                </div>
+
+                <h2 class="text-3xl font-bold text-gray-800 mb-3">
+                    Login Required
+                </h2>
+
+                <p class="text-gray-500 mb-8">
+                    Please login to reserve our cafe for your event.
+                </p>
+
+                <a href="{{ route('login') }}"
+                    class="inline-flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white px-8 py-4 rounded-xl font-semibold transition">
+
+                    <i class="fas fa-sign-in-alt"></i>
+                    Login to Book Event
+
+                </a>
+
+            </div>
+
+        </div>
+    </section>
+
+    @endguest
     {{-- Why Choose Us --}}
     <section class="py-20 bg-gray-50">
         <div class="container mx-auto px-4">

@@ -1,3 +1,28 @@
+@php
+    $venuePrice = 1000000;
+
+    $servicePrices = [
+        'catering' => 150000,
+        'av_equipment' => 200000,
+        'decoration' => 300000,
+        'photographer' => 500000,
+    ];
+@endphp
+
+<style>
+.service-card{
+    transition:.3s;
+}
+
+.service-card.active{
+    border-color:#f59e0b;
+    background:#fffbeb;
+    transform:translateY(-2px);
+    box-shadow:0 10px 20px rgba(245,158,11,.15);
+}
+</style>
+
+
     {{-- Booking Form Section --}}
     <section class="py-20">
         <div class="container mx-auto px-4">
@@ -196,43 +221,143 @@
                         {{-- Additional Services --}}
                         <div class="mb-8">
                             <h3 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
-                                <div class="w-8 h-8 bg-amber-500 text-white rounded-full flex items-center justify-center mr-3 text-sm">4</div>
+                                <div
+                                    class="w-8 h-8 bg-amber-500 text-white rounded-full flex items-center justify-center mr-3 text-sm">
+                                    4
+                                </div>
                                 Additional Services
                             </h3>
+
                             <div class="grid md:grid-cols-2 gap-4">
-                                {{-- Ini tetap bisa dipakai, tapi harga akan dihitung di backend --}}
-                                <label class="flex items-start p-4 border-2 border-gray-200 rounded-xl cursor-pointer hover:border-amber-500 transition">
-                                    <input type="checkbox" name="additional_services[]" value="catering"
-                                        class="mt-1 mr-3 w-5 h-5 text-amber-500 rounded focus:ring-amber-500">
-                                    <div>
-                                        <div class="font-semibold text-gray-800">Catering Package</div>
-                                        <div class="text-xs text-gray-500 mt-1">Includes snacks & beverages</div>
+
+                                {{-- Catering --}}
+                                <label
+                                    class="service-card flex items-start p-5 border-2 border-gray-200 rounded-2xl cursor-pointer transition-all duration-300 hover:border-amber-400 hover:shadow-md">
+
+                                    <input
+                                        type="checkbox"
+                                        name="additional_services[]"
+                                        value="catering"
+                                        data-price="{{ $servicePrices['catering'] }}"
+                                        data-name="Catering Package"
+                                        class="service-checkbox mt-1 mr-3 w-5 h-5 text-amber-500 rounded focus:ring-amber-500">
+
+                                    <div class="w-full">
+
+                                        <div class="flex justify-between items-center">
+                                            <div class="font-semibold text-gray-800">
+                                                Catering Package
+                                            </div>
+
+                                            <span class="bg-amber-100 text-amber-700 text-xs font-bold px-3 py-1 rounded-full">
+                                                + Rp {{ number_format($servicePrices['catering'],0,',','.') }}
+                                            </span>
+                                        </div>
+
+                                        <div class="text-xs text-gray-500 mt-1">
+                                            Includes snacks & beverages
+                                        </div>
+
                                     </div>
+
                                 </label>
-                                <label class="flex items-start p-4 border-2 border-gray-200 rounded-xl cursor-pointer hover:border-amber-500 transition">
-                                    <input type="checkbox" name="additional_services[]" value="av_equipment"
-                                        class="mt-1 mr-3 w-5 h-5 text-amber-500 rounded focus:ring-amber-500">
-                                    <div>
-                                        <div class="font-semibold text-gray-800">AV Equipment</div>
-                                        <div class="text-xs text-gray-500 mt-1">Projector, sound system, mic</div>
+
+                                {{-- AV --}}
+                                <label
+                                    class="service-card flex items-start p-5 border-2 border-gray-200 rounded-2xl cursor-pointer transition-all duration-300 hover:border-amber-400 hover:shadow-md">
+
+                                    <input
+                                        type="checkbox"
+                                        name="additional_services[]"
+                                        value="av_equipment"
+                                        data-price="{{ $servicePrices['av_equipment'] }}"
+                                        data-name="AV Equipment"
+                                        class="service-checkbox mt-1 mr-3 w-5 h-5 text-amber-500 rounded focus:ring-amber-500">
+
+                                    <div class="w-full">
+
+                                        <div class="flex justify-between items-center">
+                                            <div class="font-semibold text-gray-800">
+                                                AV Equipment
+                                            </div>
+
+                                            <span class="bg-amber-100 text-amber-700 text-xs font-bold px-3 py-1 rounded-full">
+                                                + Rp {{ number_format($servicePrices['av_equipment'],0,',','.') }}
+                                            </span>
+                                        </div>
+
+                                        <div class="text-xs text-gray-500 mt-1">
+                                            Projector, sound system, mic
+                                        </div>
+
                                     </div>
+
                                 </label>
-                                <label class="flex items-start p-4 border-2 border-gray-200 rounded-xl cursor-pointer hover:border-amber-500 transition">
-                                    <input type="checkbox" name="additional_services[]" value="decoration"
-                                        class="mt-1 mr-3 w-5 h-5 text-amber-500 rounded focus:ring-amber-500">
-                                    <div>
-                                        <div class="font-semibold text-gray-800">Decoration</div>
-                                        <div class="text-xs text-gray-500 mt-1">Basic event decoration</div>
+
+                                {{-- Decoration --}}
+                                <label
+                                    class="service-card flex items-start p-5 border-2 border-gray-200 rounded-2xl cursor-pointer transition-all duration-300 hover:border-amber-400 hover:shadow-md">
+
+                                    <input
+                                        type="checkbox"
+                                        name="additional_services[]"
+                                        value="decoration"
+                                        data-price="{{ $servicePrices['decoration'] }}"
+                                        data-name="Decoration"
+                                        class="service-checkbox mt-1 mr-3 w-5 h-5 text-amber-500 rounded focus:ring-amber-500">
+
+                                    <div class="w-full">
+
+                                        <div class="flex justify-between items-center">
+                                            <div class="font-semibold text-gray-800">
+                                                Decoration
+                                            </div>
+
+                                            <span class="bg-amber-100 text-amber-700 text-xs font-bold px-3 py-1 rounded-full">
+                                                + Rp {{ number_format($servicePrices['decoration'],0,',','.') }}
+                                            </span>
+                                        </div>
+
+                                        <div class="text-xs text-gray-500 mt-1">
+                                            Basic event decoration
+                                        </div>
+
                                     </div>
+
                                 </label>
-                                <label class="flex items-start p-4 border-2 border-gray-200 rounded-xl cursor-pointer hover:border-amber-500 transition">
-                                    <input type="checkbox" name="additional_services[]" value="photographer"
-                                        class="mt-1 mr-3 w-5 h-5 text-amber-500 rounded focus:ring-amber-500">
-                                    <div>
-                                        <div class="font-semibold text-gray-800">Photography</div>
-                                        <div class="text-xs text-gray-500 mt-1">Professional event photographer</div>
+
+                                {{-- Photography --}}
+                                <label
+                                    class="service-card flex items-start p-5 border-2 border-gray-200 rounded-2xl cursor-pointer transition-all duration-300 hover:border-amber-400 hover:shadow-md">
+
+                                    <input
+                                        type="checkbox"
+                                        name="additional_services[]"
+                                        value="photographer"
+                                        data-price="{{ $servicePrices['photographer'] }}"
+                                        data-name="Photography"
+                                        class="service-checkbox mt-1 mr-3 w-5 h-5 text-amber-500 rounded focus:ring-amber-500">
+
+                                    <div class="w-full">
+
+                                        <div class="flex justify-between items-center">
+                                            <div class="font-semibold text-gray-800">
+                                                Photography
+                                            </div>
+
+                                            <span class="bg-amber-100 text-amber-700 text-xs font-bold px-3 py-1 rounded-full">
+                                                + Rp {{ number_format($servicePrices['photographer'],0,',','.') }}
+                                            </span>
+                                        </div>
+
+                                        <div class="text-xs text-gray-500 mt-1">
+                                            Professional event photographer
+                                        </div>
+
                                     </div>
+
                                 </label>
+
                             </div>
                         </div>
 
@@ -249,6 +374,66 @@
 
                         {{-- ### PERUBAHAN 3: PRICE SUMMARY DIHAPUS ### --}}
                         {{-- Blok ini dihapus karena kalkulasi pindah ke backend --}}
+                        {{-- Booking Summary --}}
+                        <div class="mb-8">
+                            <h3 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
+                                <div class="w-8 h-8 bg-amber-500 text-white rounded-full flex items-center justify-center mr-3 text-sm">
+                                    6
+                                </div>
+                                Booking Summary
+                            </h3>
+
+                            <div class="bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-200 rounded-2xl p-6">
+
+                                <div class="flex justify-between items-centermb-2">
+                                    <span class="text-gray-700 font-medium mb-4">
+                                        Venue Booking
+                                    </span>
+
+                                    <span class="font-semibold">
+                                        Rp {{ number_format($venuePrice,0,',','.') }}
+                                    </span>
+                                </div>
+
+                                <div id="selectedServices"></div>
+
+                                <hr class="my-5">
+
+                                <div class="flex justify-between items-center mt-2">
+
+                                    <span class="text-xl font-bold">
+                                        Total
+                                    </span>
+
+                                    <span
+                                        id="totalPrice"
+                                        class="text-xl font-bold text-amber-600">
+
+                                        Rp {{ number_format($venuePrice,0,',','.') }}
+
+                                    </span>
+
+                                </div>
+
+                                <div class="flex justify-between items-center">
+
+                                    <span class="text-gray-600">
+                                        Down Payment (50%)
+                                    </span>
+
+                                    <span
+                                        id="dpPrice"
+                                        class="text-lg font-medium text-green-600">
+
+                                        Rp {{ number_format($venuePrice/2,0,',','.') }}
+
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+                        </div>
 
                         {{-- Terms & Submit --}}
                         <div class="mb-6">
@@ -275,3 +460,64 @@
         </div>
     </section>
     {{-- End Booking Form Section --}}
+
+
+    
+<script>
+    const venuePrice = {{ $venuePrice }};
+
+    const checkboxes = document.querySelectorAll('.service-checkbox');
+    const selectedServices = document.getElementById('selectedServices');
+    const totalPrice = document.getElementById('totalPrice');
+    const dpPrice = document.getElementById('dpPrice');
+
+    function rupiah(number) {
+        return "Rp " + number.toLocaleString("id-ID");
+    }
+
+    function updatePrice() {
+
+        let total = venuePrice;
+
+        selectedServices.innerHTML = "";
+
+        checkboxes.forEach(item => {
+
+            const card = item.closest('.service-card');
+
+            if (item.checked) {
+
+                card.classList.add('active');
+
+                const price = Number(item.dataset.price);
+
+                total += price;
+
+                selectedServices.innerHTML += `
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-gray-700">${item.dataset.name}</span>
+                        <span class="font-small">${rupiah(price)}</span>
+                    </div>
+                `;
+
+            } else {
+
+                card.classList.remove('active');
+
+            }
+
+        });
+
+        totalPrice.textContent = rupiah(total);
+        dpPrice.textContent = rupiah(total / 2);
+
+    }
+
+    checkboxes.forEach(item => {
+
+        item.addEventListener('change', updatePrice);
+
+    });
+
+    updatePrice();
+</script>
