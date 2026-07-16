@@ -33,17 +33,34 @@ Route::get('/check-availability', [HomeController::class, 'checkAvailability'])-
 
 // 🏘️ Coliving Routes (public)
 Route::prefix('coliving')->name('coliving.')->group(function () {
-    Route::get('/', [ColivingController::class, 'index'])->name('index');
-    Route::post('check-availability', [ColivingController::class, 'checkAvailability'])->name('check.availability');
-    // payment flow
+
+    // daftar kamar
+    Route::get('/', [ColivingController::class, 'index'])
+        ->name('index');
+
+    Route::post('check-availability', [ColivingController::class, 'checkAvailability'])
+        ->name('check.availability');
+
+    // payment
     Route::get('payment-callback', [ColivingController::class, 'paymentCallback'])->name('payment.callback');
     Route::post('snap-token/{bookingReference}', [ColivingController::class, 'snapToken'])->name('snap-token');
     Route::get('payment-status/{bookingReference}', [ColivingController::class, 'paymentStatus'])->name('payment.status');
     Route::get('payment-success/{bookingReference}', [ColivingController::class, 'paymentSuccess'])->name('payment.success');
     Route::get('payment/{bookingReference}', [ColivingController::class, 'payment'])->name('payment');
-    // room details & booking
-    Route::get('{room}', [ColivingController::class, 'show'])->name('show');
-    Route::post('{room}/book', [ColivingController::class, 'book'])->name('book');
+
+    // route customer
+    Route::middleware(['auth', 'role:customer'])->group(function () {
+
+        Route::get('my-booking', [ColivingController::class, 'myBooking'])
+            ->name('my-booking');
+
+        Route::post('{room}/book', [ColivingController::class, 'book'])
+            ->name('book');
+    });
+
+    // detail kamar (SELALU taruh paling bawah)
+    Route::get('{room}', [ColivingController::class, 'show'])
+        ->name('show');
 });
 
 Route::post('coliving/payment/webhook', [ColivingController::class, 'paymentWebhook'])

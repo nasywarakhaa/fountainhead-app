@@ -23,10 +23,10 @@
             <!-- Center Content -->
             <div class="relative z-10 text-white">
                 <h2 class="text-4xl font-bold mb-4 leading-tight">
-                    Manage Your<br>Dashboard
+                    Welcome to<br>FountainHead
                 </h2>
                 <p class="text-teal-100 text-lg leading-relaxed">
-                    Access your admin panel to manage rooms, bookings, and cafe events all in one place.
+                    Book rooms, reserve event spaces, and access your account with ease.
                 </p>
             </div>
 
@@ -53,8 +53,21 @@
 
             <!-- Header -->
             <div class="mb-8">
-                <h3 class="text-3xl font-bold text-gray-900 mb-2">Welcome Back!</h3>
-                <p class="text-gray-600">Please login to access your dashboard</p>
+                <h3 class="text-3xl font-bold text-gray-900 mb-2">
+                    Welcome Back!
+                </h3>
+
+                <p class="text-gray-600">
+                    Login to continue your journey.
+                </p>
+
+                <p class="mt-1 text-sm text-gray-500">
+                    Don't have an account?
+                    <a href="{{ route('register') }}"
+                    class="font-semibold text-teal-600 hover:text-teal-700">
+                        Sign Up
+                    </a>
+                </p>
             </div>
 
             <!-- Session Status -->
@@ -138,6 +151,8 @@
                     </x-primary-button>
                 </div>
             </form>
+
+            
 
             <!-- Mobile Footer -->
             <div class="md:hidden mt-8 pt-6 border-t border-gray-200 text-center">

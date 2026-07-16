@@ -170,21 +170,21 @@ class ColivingController extends Controller
     public function book(Request $request, ColivingRoom $room)
     {
         $validated = $request->validate([
-            'check_in_date'      => 'required|date|after_or_equal:today',
-            'check_out_date'     => 'required|date|after:check_in_date',
-            'customer_name'      => 'required|string|max:255',
-            'customer_email'     => 'required|email|max:255',
-            'customer_phone'     => 'required|string|max:20',
-            'special_requests'   => 'nullable|string|max:1000',
+            'check_in_date'    => 'required|date|after_or_equal:today',
+            'check_out_date'   => 'required|date|after:check_in_date',
+            'customer_phone'   => 'required|string|max:20',
+            'special_requests' => 'nullable|string|max:1000',
         ]);
+
+        $user = auth()->user();
 
         if (!$room->is_available) {
             return back()->with('error', 'This room is currently unavailable.');
         }
 
         // ✅ Sanitize user-provided text (XSS hardening)
-        $customerName = $this->cleanText($validated['customer_name'], 255);
-        $customerEmail = strtolower(trim((string) $validated['customer_email'])); // email validated already
+        $customerName = $this->cleanText($user->name, 255);
+        $customerEmail = strtolower(trim($user->email));
         $customerPhone = $this->cleanPhone($validated['customer_phone'], 20);
 
         // special_requests boleh multiline, tapi tetap strip tags
@@ -212,7 +212,7 @@ class ColivingController extends Controller
         try {
             $booking = ColivingBooking::create([
                 'booking_reference' => $bookingReference,
-                'user_id'           => auth()->id() ?? null,
+                'user_id'           => auth()->id(),
                 'coliving_room_id'  => $room->id,
                 'check_in_date'     => $validated['check_in_date'],
                 'check_out_date'    => $validated['check_out_date'],
@@ -241,6 +241,15 @@ class ColivingController extends Controller
             Log::error('Booking create error: ' . $e->getMessage());
             return back()->with('error', 'Failed to create booking. Please try again.');
         }
+    }
+    public function myBooking()
+    {
+        $bookings = ColivingBooking::with('colivingRoom')
+            ->where('user_id', auth()->id())
+            ->latest()
+            ->get();
+
+        return view('landing.coliving.my-booking', compact('bookings'));
     }
     public function snapToken(Request $request, $bookingReference)
     {

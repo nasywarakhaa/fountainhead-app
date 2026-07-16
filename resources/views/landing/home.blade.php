@@ -37,11 +37,11 @@
         <div class="container mx-auto px-4 relative z-10">
             @if (isset($heroSliders) && $heroSliders->count() > 0)
                 {{-- Flowbite Carousel for Hero Sliders --}}
-                <div id="hero-carousel" class="relative w-full" data-carousel="slide">
-                    <div class="relative h-screen overflow-hidden rounded-lg md:h-[calc(100vh-160px)] flex items-center">
+                <div id="hero-carousel" class="pt-8 md:pt-12" data-carousel="slide">
+                    <div class="relative h-screen overflow-hidden rounded-lg md:h-[calc(100vh-160px)] flex items-start pt-24">
                         @foreach ($heroSliders as $index => $slider)
                             <div class="hidden duration-700 ease-in-out" data-carousel-item="{{ $index === 0 ? 'active' : '' }}">
-                                <div class="grid lg:grid-cols-2 gap-12 items-center px-4 md:px-0"> {{-- Tambah padding di sini untuk mobile --}}
+                                <div class="grid lg:grid-cols-2 gap-12 items-center px-4 md:px-0" pt-12> {{-- Tambah padding di sini untuk mobile --}}
                                     <div class="text-center lg:text-left" data-aos="fade-right">
                                         <h1 class="text-5xl lg:text-6xl font-extrabold text-gray-800 leading-tight mb-6">
                                             {{ $slider->title }}

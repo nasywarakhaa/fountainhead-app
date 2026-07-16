@@ -79,7 +79,7 @@
 
     @yield('styles')
 </head>
-<body class="font-['Inter'] text-gray-800 overflow-x-hidden antialiased">
+<body class="min-h-screen flex flex-col font-['Inter'] text-gray-800 overflow-x-hidden antialiased">
     {{-- Loading Spinner --}}
     <div id="loader" class="fixed inset-0 bg-white flex items-center justify-center z-[9999] transition-opacity duration-500">
         <div class="w-12 h-12 border-4 border-gray-200 border-t-orange-500 rounded-full animate-spin-custom"></div>
@@ -138,12 +138,96 @@
                     </a>
                 </div>
 
-                {{-- CTA Button (kanan) --}}
-                <div class="hidden lg:flex items-center">
-                    {{-- <a href="{{ route('coliving.index') }}"
-                    class="ml-6 bg-orange-500 text-white px-5 py-2 rounded-full font-semibold shadow-md hover:bg-orange-600 transition-all hover:scale-105">
-                        Book Now
-                    </a> --}}
+                {{-- User Menu --}}
+                <div class="hidden lg:flex items-center space-x-3">
+
+                    @guest
+                        <a href="{{ route('login') }}"
+                            class="text-gray-700 hover:text-orange-500 font-medium transition">
+                            Login
+                        </a>
+
+                        <a href="{{ route('register') }}"
+                            class="bg-orange-500 hover:bg-orange-600 text-white px-5 py-2 rounded-full font-medium transition">
+                            Register
+                        </a>
+                    @endguest
+
+                    @auth
+
+                    {{-- Customer --}}
+                    @if(auth()->user()->hasRole('customer'))
+
+                        <div class="relative" x-data="{ open: false }">
+
+                            <button
+                                @click="open = !open"
+                                class="flex items-center gap-2 border border-orange-300 bg-white px-4 py-2 rounded-full hover:border-orange-500 transition">
+
+                                <div class="w-8 h-8 rounded-full bg-orange-500 flex items-center justify-center">
+                                    <i class="fas fa-user text-white text-sm"></i>
+                                </div>
+
+                                <span class="font-semibold text-gray-700">
+                                    Hi, {{ explode(' ', auth()->user()->name)[0] }}
+                                </span>
+
+                                <i class="fas fa-chevron-down text-xs"
+                                :class="{ 'rotate-180': open }"></i>
+
+                            </button>
+
+                            <div
+                                x-show="open"
+                                @click.away="open = false"
+                                class="absolute right-0 mt-2 w-52 bg-white rounded-lg shadow-lg border">
+
+                                <a href="{{ route('coliving.my-booking') }}"
+                                    class="block px-4 py-3 hover:bg-gray-100">
+                                    <i class="fas fa-calendar-check mr-2"></i>
+                                    My Booking
+                                </a>
+
+                                <form action="{{ route('logout') }}" method="POST">
+                                    @csrf
+                                    <button class="w-full text-left px-4 py-3 hover:bg-gray-100">
+                                        <i class="fas fa-sign-out-alt mr-2"></i>
+                                        Logout
+                                    </button>
+                                </form>
+
+                            </div>
+
+                        </div>
+
+                    {{-- Admin & Operator --}}
+                    @elseif(auth()->user()->hasAnyRole(['admin', 'operator']))
+
+                        <div class="flex items-center gap-3">
+
+                            <a href="{{ route('admin.dashboard') }}"
+                                class="bg-orange-500 hover:bg-orange-600 text-white px-5 py-2 rounded-full font-medium transition">
+                                Dashboard
+                            </a>
+
+                            <form action="{{ route('logout') }}" method="POST">
+                                @csrf
+
+                                <button
+                                    class="border border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white px-5 py-2 rounded-full transition">
+
+                                    Logout
+
+                                </button>
+
+                            </form>
+
+                        </div>
+
+                    @endif
+
+                @endauth
+
                 </div>
 
                 {{-- Mobile Menu Button --}}
@@ -174,13 +258,13 @@
 
 
     {{-- Main Content --}}
-    <main>
+    <main class="flex-1 pt-24">
         @yield('content')
     </main>
 
     {{-- Footer --}}
     <footer class="bg-gray-800 text-white py-12">
-        <div class="container mx-auto px-4">
+        <div class="container mx-auto px-6 pt-10">
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
                 {{-- About --}}
                 <div>

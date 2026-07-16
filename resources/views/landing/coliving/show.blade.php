@@ -337,6 +337,26 @@
                                     @endif
                                 </div>
                             @endif
+                            @guest
+                            <div class="bg-yellow-50 border border-yellow-300 rounded-lg p-4 text-center">
+                                <i class="fas fa-lock text-orange-500 text-2xl mb-2"></i>
+
+                                <h3 class="font-semibold text-gray-800">
+                                    Login Required
+                                </h3>
+
+                                <p class="text-sm text-gray-600 mt-2">
+                                    Please login first before booking this room.
+                                </p>
+
+                                <a href="{{ route('login') }}"
+                                    class="mt-4 inline-block w-full bg-orange-600 hover:bg-orange-700 text-white font-medium py-3 rounded-lg">
+                                    Login
+                                </a>
+                            </div>
+                            @endguest
+
+                            @auth
                             <form action="{{ route('coliving.book', $room->id) }}" method="POST" id="bookingForm"
                                 class="space-y-4">
                                 @csrf
@@ -355,18 +375,23 @@
                                         required min="{{ date('Y-m-d', strtotime('+1 day')) }}" />
                                 </div>
                                 <div>
-                                    <label for="customer_name" class="block mb-2 text-sm font-medium text-gray-900">Full
-                                        Name</label>
-                                    <input type="text" name="customer_name" placeholder="Enter your full name"
-                                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-orange-500 focus:border-orange-500 block w-full p-2.5"
-                                        required />
+                                    <label class="block mb-2 text-sm font-medium text-gray-900">
+                                        Full Name
+                                    </label>
+
+                                    <input type="text"
+                                        value="{{ auth()->user()->name }}"
+                                        readonly
+                                        class="bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 cursor-not-allowed" />
                                 </div>
                                 <div>
                                     <label for="customer_email"
                                         class="block mb-2 text-sm font-medium text-gray-900">Email</label>
-                                    <input type="email" name="customer_email" placeholder="your@email.com"
-                                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-orange-500 focus:border-orange-500 block w-full p-2.5"
-                                        required />
+                                    <input
+                                        type="email"
+                                        value="{{ auth()->user()->email }}"
+                                        readonly
+                                        class="bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 cursor-not-allowed">
                                 </div>
                                 <div>
                                     <label for="customer_phone" class="block mb-2 text-sm font-medium text-gray-900">Phone
@@ -388,16 +413,32 @@
                                     <i class="fas fa-info-circle mr-1"></i> You won't be charged yet. Payment will be
                                     processed after booking confirmation.
                                 </div>
-                                <button type="submit" id="bookingSubmitBtn"
-                                    class="w-full text-white bg-orange-600 hover:bg-orange-700 focus:ring-4 focus:outline-none focus:ring-orange-300 font-medium rounded-lg text-sm px-5 py-3 text-center disabled:opacity-50 disabled:cursor-not-allowed">
-                                    <span id="btnText">Book Now</span>
-                                    <span id="btnLoading" class="hidden">
-                                        <i class="fas fa-spinner fa-spin mr-2"></i>Processing...
-                                    </span>
-                                </button>
+                                @guest
+                                    <a href="{{ route('login') }}"
+                                        class="w-full block text-center text-white bg-orange-600 hover:bg-orange-700 font-medium rounded-lg px-5 py-3">
+                                        Login to Book
+                                    </a>
+                                @endguest
+
+                                @auth
+                                    @if(auth()->user()->hasRole('customer'))
+                                        <button type="submit" id="bookingSubmitBtn"
+                                            class="w-full text-white bg-orange-600 hover:bg-orange-700 font-medium rounded-lg px-5 py-3">
+                                            Book Now
+                                        </button>
+                                    @else
+                                        <button
+                                            type="button"
+                                            disabled
+                                            class="w-full bg-gray-400 text-white rounded-lg px-5 py-3 cursor-not-allowed">
+                                            Booking is for customer accounts only
+                                        </button>
+                                    @endif
+                                @endauth
                                 <p class="mt-2 text-xs text-gray-500 text-center"><i class="fas fa-shield-alt mr-1"></i>
                                     Secure booking - Your information is protected</p>
                             </form>
+                            @endauth
                         </div>
                     </div>
                 </div>
