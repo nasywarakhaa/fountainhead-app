@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\CafeEventBooking;
 use App\Models\ColivingRoom;
 use App\Models\ColivingBooking;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
@@ -17,6 +18,8 @@ use Midtrans\Snap;
 use Midtrans\Transaction;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\ColivingBookingConfirmed;
+
+
 class ColivingController extends Controller
 {
     /**
@@ -266,6 +269,7 @@ class ColivingController extends Controller
 
         return view('landing.my-booking', compact('bookings'));
     }
+
     public function snapToken(Request $request, $bookingReference)
     {
         return DB::transaction(function () use ($bookingReference) {
@@ -612,5 +616,26 @@ class ColivingController extends Controller
             'paid_at' => $booking->paid_at ? $booking->paid_at->toDateTimeString() : null,
             'cancelled_at' => $booking->cancelled_at ? $booking->cancelled_at->toDateTimeString() : null,
         ]);
+    }
+
+    public function invoice($reference)
+    {
+        $booking = ColivingBooking::with('colivingRoom')
+            ->where('booking_reference', $reference)
+            ->where('user_id', auth()->id())
+            ->firstOrFail();
+
+        if ($booking->payment_status !== 'paid') {
+            abort(403);
+        }
+
+        $pdf = Pdf::loadView(
+            'landing.invoices.invoice-coliving',
+            compact('booking')
+        );
+
+        return $pdf->stream(
+            'Invoice-'.$booking->booking_reference.'.pdf'
+        );
     }
 }

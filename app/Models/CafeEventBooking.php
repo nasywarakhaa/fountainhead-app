@@ -79,6 +79,7 @@ class CafeEventBooking extends Model
         'approved_at' => 'datetime',
         'snap_token_created_at' => 'datetime',
         'snap_token_expires_at' => 'datetime',
+        'additional_services' => 'array',
     ];
 
     // Relasi ke User (yang booking)
@@ -163,7 +164,20 @@ class CafeEventBooking extends Model
         }
 
         // TODO: Tambahkan logika harga 'additional_services' jika perlu
+        $servicePrices = [
+            'catering' => 150000,
+            'av_equipment' => 200000,
+            'decoration' => 300000,
+            'photographer' => 500000,
+        ];
+
         $this->services_price = 0;
+
+        if (is_array($this->additional_services)) {
+            foreach ($this->additional_services as $service) {
+                $this->services_price += $servicePrices[$service] ?? 0;
+            }
+        }
 
         // === Kalkulasi Total ===
         $this->subtotal = $this->venue_price + $this->services_price;

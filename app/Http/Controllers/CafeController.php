@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\CafeEventBooking;
 use App\Models\Galleries;
+use Barryvdh\DomPDF\Facade\Pdf;
 use DB;
 use Exception;
 use Illuminate\Http\Request;
@@ -61,7 +62,8 @@ class CafeController extends Controller
 
     public function bookEvent()
     {
-        return view('landing.cafe.book');
+        return view('landing.cafe.book', compact(
+        ));
     }
 
     public function storeBooking(Request $request)
@@ -149,6 +151,7 @@ class CafeController extends Controller
         return redirect()->route('cafe.payment', $booking->booking_reference)
             ->with('success', 'Event booking created successfully! Please pay the deposit to confirm your booking.');
     }
+
     public function snapToken(Request $request, $bookingReference)
     {
         return DB::transaction(function () use ($bookingReference) {
@@ -198,14 +201,34 @@ class CafeController extends Controller
         });
     }
 
-    public function payment($bookingReference)
+    public function invoice($reference)
     {
-    $booking = CafeEventBooking::where('booking_reference', $bookingReference)->firstOrFail();
+        $booking = CafeEventBooking::where('booking_reference', $reference)
+            ->where('user_id', auth()->id())
+            ->firstOrFail();
 
-    if ($booking->payment_status === 'dp_paid') {
-        return redirect()->route('cafe.payment.success', $booking->booking_reference);
+        if (!in_array($booking->payment_status, ['paid', 'dp_paid'])) {
+            abort(403);
+        }
+
+        $pdf = Pdf::loadView(
+            'landing.invoices.invoice-cafe',
+            compact('booking')
+        );
+
+        return $pdf->stream(
+            'Invoice-'.$booking->booking_reference.'.pdf'
+        );
     }
-    return view('landing.cafe.payment', compact('booking'));
+
+    public function payment($bookingReference)
+        {
+        $booking = CafeEventBooking::where('booking_reference', $bookingReference)->firstOrFail();
+
+        if ($booking->payment_status === 'dp_paid') {
+            return redirect()->route('cafe.payment.success', $booking->booking_reference);
+        }
+        return view('landing.cafe.payment', compact('booking'));
     }
 
     private function generateSnapToken($booking)

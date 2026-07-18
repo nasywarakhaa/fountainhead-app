@@ -58,6 +58,9 @@ Route::prefix('coliving')->name('coliving.')->group(function () {
     // detail kamar (SELALU taruh paling bawah)
     Route::get('{room}', [ColivingController::class, 'show'])
         ->name('show');
+
+    Route::get('/my-booking/coliving/invoice/{reference}', [ColivingController::class, 'invoice'])
+        ->name('coliving.invoice');
 });
 
 Route::post('coliving/payment/webhook', [ColivingController::class, 'paymentWebhook'])
@@ -258,6 +261,26 @@ Route::middleware(['auth', 'role:customer'])->group(function () {
 
     Route::get('/my-booking', [ColivingController::class, 'myBooking'])
         ->name('my-booking');
+
+    // Cafe
+    Route::get('/my-booking/cafe/invoice/{reference}', [CafeController::class, 'invoice'])
+        ->name('cafe.invoice');
+
+    // Coliving
+    Route::get('/my-booking/coliving/invoice/{reference}', [ColivingController::class, 'invoice'])
+        ->name('coliving.invoice');
+
+});
+
+Route::middleware(['auth', 'role:operator'])->prefix('admin')->name('admin.')->group(function () {
+
+    // Report Coliving
+    Route::get('/reports/coliving', [ColivingReportController::class, 'index'])
+        ->name('coliving.report');
+
+    // Report Cafe Event
+    Route::get('/reports/cafe', [CafeReportController::class, 'index'])
+        ->name('cafe.report');
 
 });
     

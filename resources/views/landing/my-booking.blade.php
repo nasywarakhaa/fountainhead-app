@@ -140,12 +140,17 @@
 
                         @endif
 
-                        <a href="{{ route('coliving.show',$booking->coliving_room_id) }}"
-                            class="px-6 py-3 rounded-xl border border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white">
+                        @if($booking->payment_status == 'paid')
 
-                            View Room
+                        <a href="{{ route('coliving.invoice', $booking->booking_reference) }}"
+                            target="_blank"
+                            class="inline-flex items-center gap-2 px-6 py-3 rounded-xl border border-orange-500 bg-white text-orange-500 font-medium hover:bg-orange-500 hover:text-white transition duration-300">
 
+                            <i class="fas fa-download"></i>
+                            Invoice
                         </a>
+
+                        @endif
 
                     </div>
 
@@ -249,6 +254,21 @@
                             </a>
 
                         </div>
+
+                    @endif
+
+                    @if(in_array($booking->payment_status,['paid','dp_paid']))
+
+                    <div class="mt-6">
+
+                        <a href="{{ route('cafe.invoice', $booking->booking_reference) }}"
+                            target="_blank"
+                            class="inline-flex items-center gap-2 px-6 py-3 rounded-xl border border-orange-500 bg-white text-orange-500 font-medium hover:bg-orange-500 hover:text-white transition duration-300">
+
+                            <i class="fas fa-download"></i>
+                            Invoice
+                        </a>
+                    </div>
 
                     @endif
 

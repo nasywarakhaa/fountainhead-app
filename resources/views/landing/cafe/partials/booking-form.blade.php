@@ -1,5 +1,5 @@
 @php
-    $venuePrice = 1000000;
+    $venuePrice = 0;
 
     $servicePrices = [
         'catering' => 150000,
@@ -390,12 +390,21 @@
                                         Venue Booking
                                     </span>
 
-                                    <span class="font-semibold">
-                                        Rp {{ number_format($venuePrice,0,',','.') }}
+                                    <span id="venuePrice" class="font-semibold">
+                                        Rp 0
                                     </span>
                                 </div>
 
                                 <div id="selectedServices"></div>
+
+                                
+                                <div class="flex justify-between items-center mb-2">
+                                    <span class="text-gray-700">Tax (11%)</span>
+
+                                    <span class="font-semibold" id="taxPrice">
+                                        Rp 0
+                                    </span>
+                                </div>
 
                                 <hr class="my-5">
 
@@ -464,18 +473,25 @@
 
     
 <script>
-    const venuePrice = {{ $venuePrice }};
+    
+    const hourlyRate = 150000;
 
     const checkboxes = document.querySelectorAll('.service-checkbox');
     const selectedServices = document.getElementById('selectedServices');
     const totalPrice = document.getElementById('totalPrice');
     const dpPrice = document.getElementById('dpPrice');
-
+    
     function rupiah(number) {
         return "Rp " + number.toLocaleString("id-ID");
     }
 
     function updatePrice() {
+
+        const duration = calculateDuration();
+
+        const venuePrice = duration * hourlyRate;
+     
+        document.getElementById('venuePrice').textContent = rupiah(venuePrice);
 
         let total = venuePrice;
 
@@ -508,9 +524,14 @@
 
         });
 
-        totalPrice.textContent = rupiah(total);
-        dpPrice.textContent = rupiah(total / 2);
+        const subtotal = total;
+        const tax = subtotal * 0.11;
+        const grandTotal = subtotal + tax;
 
+        document.getElementById('taxPrice').textContent = rupiah(tax);
+        
+        totalPrice.textContent = rupiah(grandTotal);
+        dpPrice.textContent = rupiah(grandTotal / 2);
     }
 
     checkboxes.forEach(item => {
@@ -518,6 +539,29 @@
         item.addEventListener('change', updatePrice);
 
     });
+
+    function calculateDuration() {
+        const start = document.getElementById('startTime').value;
+        const end = document.getElementById('endTime').value;
+
+        if (!start || !end) {
+            return 0;
+        }
+
+        const startTime = new Date(`2000-01-01 ${start}`);
+        const endTime = new Date(`2000-01-01 ${end}`);
+
+        let duration = (endTime - startTime) / (1000 * 60 * 60);
+
+        if (duration < 0) {
+            duration += 24; // jika melewati tengah malam
+        }
+
+        return duration;
+    }
+
+    document.getElementById('startTime').addEventListener('change', updatePrice);
+    document.getElementById('endTime').addEventListener('change', updatePrice);
 
     updatePrice();
 </script>
