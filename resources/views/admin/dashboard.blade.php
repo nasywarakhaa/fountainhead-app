@@ -224,8 +224,29 @@
             <h5 class="mb-0 font-weight-bold">
               <i class="fas fa-bed text-primary mr-2"></i>Recent Coliving Bookings
             </h5>
-            <a href="{{ route('admin.coliving-bookings.index') }}" class="btn btn-sm btn-primary">View All</a>
-          </div>
+            <div class="card-header d-flex justify-content-between align-items-center">
+
+              <button
+                type="button"
+                class="btn btn-outline-secondary mr-2"
+                data-toggle="modal"
+                data-target="#reportModal"
+                data-report="{{ route('admin.coliving.report.print') }}"
+                data-title="Coliving Report">
+
+                <i class="fas fa-print me-1"></i>
+                Print Report
+
+              </button>
+
+                <a href="{{ route('admin.coliving-bookings.index') }}"
+                  class="btn btn-primary">
+                    View All
+                </a>
+
+            </div>
+
+        </div>
         </div>
         <div class="card-body p-0">
           <div class="table-responsive">
@@ -284,10 +305,36 @@
       <div class="card shadow-sm">
         <div class="card-header bg-white border-bottom">
           <div class="d-flex justify-content-between align-items-center">
-            <h5 class="mb-0 font-weight-bold">
-              <i class="fas fa-calendar-alt text-danger mr-2"></i>Recent Event Bookings
-            </h5>
-            <a href="{{ route('admin.cafe-bookings.index') }}" class="btn btn-sm btn-danger">View All</a>
+            <!-- <div class="card-header d-flex justify-content-between align-items-center"> -->
+
+              <h5 class="mb-0 font-weight-bold">
+                  <i class="fas fa-calendar-alt text-danger mr-2"></i>Recent Event Bookings
+              </h5>
+
+              <div class="card-header d-flex justify-content-between align-items-center">
+
+                  <button
+                      type="button"
+                      class="btn btn-outline-secondary mr-2"
+                      data-toggle="modal"
+                      data-target="#reportModal"
+                      data-report="{{ route('admin.cafe.report.print') }}"
+                      data-title="Cafe Report">
+
+                      <i class="fas fa-print mr-1"></i>
+                      Print Report
+
+                  </button>
+
+                  <a href="{{ route('admin.cafe-bookings.index') }}"
+                    class="btn btn-danger">
+
+                      View All
+
+                  </a>
+
+              </div>
+
           </div>
         </div>
         <div class="card-body p-0">
@@ -457,4 +504,100 @@
     </div>
   </div>
 </div>
+
+
+
+<!-- Print Report Modal -->
+<div class="modal fade" id="reportModal" tabindex="-1" aria-labelledby="reportModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+
+            <div class="modal-header">
+                <h5 class="modal-title" id="reportModalLabel">
+                    Print Report
+                </h5>
+
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
+            </div>
+
+            <form id="reportForm" method="GET">
+
+                <div class="modal-body">
+
+                    <div class="mb-3">
+                        <label class="form-label">
+                            Start Date
+                        </label>
+
+                        <input
+                            type="date"
+                            class="form-control"
+                            name="start_date"
+                            required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">
+                            End Date
+                        </label>
+
+                        <input
+                            type="date"
+                            class="form-control"
+                            name="end_date"
+                            required>
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+
+                    <button
+                        type="button"
+                        class="btn btn-secondary"
+                        data-dismiss="modal">
+
+                        Cancel
+
+                    </button>
+
+                    <button
+                        type="submit"
+                        class="btn btn-success">
+
+                        <i class="fas fa-print me-1"></i>
+
+                        Print PDF
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+</div>
+@endsection
+
+@section('scripts')
+<script>
+$(function () {
+
+    $('#reportModal').on('show.bs.modal', function (event) {
+
+        var button = $(event.relatedTarget);
+
+        var action = button.data('report');
+        var title = button.data('title');
+
+        $('#reportForm').attr('action', action);
+        $('#reportModalLabel').text(title);
+
+    });
+
+});
+</script>
 @endsection

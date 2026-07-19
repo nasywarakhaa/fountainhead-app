@@ -17,6 +17,8 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ColivingController;
 use App\Http\Controllers\CafeController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ColivingReportController;
+use App\Http\Controllers\CafeReportController;
 
 /*
 |--------------------------------------------------------------------------
@@ -118,7 +120,10 @@ Route::middleware(['auth', 'verified'])
         Route::delete('/profile', [ProfileController::class, 'destroy'])
             ->middleware('role:admin|operator')
             ->name('profile.destroy');
+
+
         // ====== MODUL UNTUK ADMIN & OPERATOR ======
+
         Route::middleware('role:admin|operator')->group(function () {
             // Coliving Rooms
             Route::get('coliving-rooms/stats', [ColivingRoomController::class, 'stats'])
@@ -126,6 +131,8 @@ Route::middleware(['auth', 'verified'])
             // Coliving Bookings
             Route::get('coliving-bookings/stats', [ColivingBookingController::class, 'stats'])
                 ->name('coliving-bookings.stats');
+
+            
             Route::resource('coliving-bookings', ColivingBookingController::class)
                 ->only(['index', 'show', 'edit', 'update'])->names([
                     'index' => 'coliving-bookings.index',
@@ -157,7 +164,29 @@ Route::middleware(['auth', 'verified'])
                     'show' => 'contact-messages.show',
                     'destroy' => 'contact-messages.destroy',
                 ]);
+
+            // Halaman pilih rentang waktu
+            Route::get('/reports/print/{type}', function ($type) {
+
+                abort_unless(in_array($type, ['coliving', 'cafe']), 404);
+
+                return view('reports.print-report', compact('type'));
+
+            })->name('reports.print');
+
+            // Generate PDF Coliving
+            Route::get('/reports/coliving', [ColivingReportController::class, 'index'])
+                ->name('coliving.report.print');
+
+            // Generate PDF Cafe
+            Route::get('/reports/cafe', [CafeReportController::class, 'index'])
+                ->name('cafe.report.print');
         });
+
+
+
+
+
         // ====== MODUL KHUSUS Operator ONLY ======
         Route::middleware('role:operator')->group(function () {
             // Coliving Rooms
@@ -271,19 +300,6 @@ Route::middleware(['auth', 'role:customer'])->group(function () {
         ->name('coliving.invoice');
 
 });
-
-Route::middleware(['auth', 'role:operator'])->prefix('admin')->name('admin.')->group(function () {
-
-    // Report Coliving
-    Route::get('/reports/coliving', [ColivingReportController::class, 'index'])
-        ->name('coliving.report');
-
-    // Report Cafe Event
-    Route::get('/reports/cafe', [CafeReportController::class, 'index'])
-        ->name('cafe.report');
-
-});
-    
 
 // 🔐 Auth routes
 require __DIR__ . '/auth.php';
